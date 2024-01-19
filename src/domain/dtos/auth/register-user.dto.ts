@@ -14,20 +14,23 @@ export class RegisterUserDto {
     const { name, email, password } = object;
 
     if (!name) {
-      return ['Missing name', undefined];
+      return ['Missing name'];
     }
+
     if (!email) {
-      return ['Missing email', undefined];
+      return ['Missing email'];
     }
 
     if (!regularExps.email.test(email)) {
-      return ['Invalid email', undefined]
+      return ['Invalid email']
     }
+
     if (!password) {
-      return ['Missing password', undefined]
+      return ['Missing password']
     }
+    
     if (password.length < 6) {
-      return ['Password too short', undefined]
+      return ['Password too short']
     }
 
     return [undefined, new RegisterUserDto(name, email, password)];
