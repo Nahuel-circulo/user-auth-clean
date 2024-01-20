@@ -21,9 +21,10 @@ export class AuthService {
 
       // email de confirmacion
 
-      const { password, ...rest } = UserEntity.fronObject(user)
+      const { password, ...userEntity } = UserEntity.fronObject(user);
+
       return {
-        ...rest,
+        user: userEntity,
         token: 'ABC'
       };
 
