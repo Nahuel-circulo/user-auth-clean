@@ -1,5 +1,5 @@
 import { UserModel } from "../../data";
-import { CustomError, RegisterUserDto } from "../../domain";
+import { CustomError, RegisterUserDto, UserEntity } from "../../domain";
 
 
 export class AuthService {
@@ -13,14 +13,19 @@ export class AuthService {
 
     try {
 
+      const user = new UserModel(registerUserDto);
+      await user.save();
       // encryptar la contraseña
 
       // JWT para mantener la autenticacion del usuario
 
       // email de confirmacion
 
-      const user = new UserModel(registerUserDto);
-      return await user.save();
+      const { password, ...rest } = UserEntity.fronObject(user)
+      return {
+        ...rest,
+        token: 'ABC'
+      };
 
     } catch (error) {
       console.log({ error })
