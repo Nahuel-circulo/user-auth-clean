@@ -1,6 +1,6 @@
 import { bcryptAdapter } from "../../config";
 import { UserModel } from "../../data";
-import { CustomError, RegisterUserDto, UserEntity } from "../../domain";
+import { CustomError, LoginUserDto, RegisterUserDto, UserEntity } from "../../domain";
 
 
 export class AuthService {
@@ -35,6 +35,25 @@ export class AuthService {
       throw CustomError.internalServer(`${error}`)
     }
 
+  }
+
+  public async loginUser(loginUserDto:LoginUserDto) {
+
+    //findOne para verificar si existe
+    const user = await UserModel.findOne({ email: loginUserDto.email });
+    if (!user) throw CustomError.badRequest('User not found');
+
+    // math del password
+    const isMatch = bcryptAdapter.compare(loginUserDto.password,user.password)
+
+    if (!isMatch) throw CustomError.badRequest('email or password not valid');
+
+    const { password, ...userEntity } = UserEntity.fronObject(user);
+    //retornar el usuario sin la contrasena y el token ABC
+    return {
+      user: userEntity,
+      token:'ABC'
+    }
   }
 
 }
