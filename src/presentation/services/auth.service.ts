@@ -1,4 +1,4 @@
-import { bcryptAdapter } from "../../config";
+import { JwtAdapter, bcryptAdapter } from "../../config";
 import { UserModel } from "../../data";
 import { CustomError, LoginUserDto, RegisterUserDto, UserEntity } from "../../domain";
 
@@ -48,11 +48,15 @@ export class AuthService {
 
     if (!isMatch) throw CustomError.badRequest('email or password not valid');
 
+    const token = await JwtAdapter.generateToken({ id: user.id });
+
+    if (!token)  throw CustomError.internalServer('Error while creating JWT')
+
     const { password, ...userEntity } = UserEntity.fronObject(user);
     //retornar el usuario sin la contrasena y el token ABC
     return {
       user: userEntity,
-      token:'ABC'
+      token
     }
   }
 
