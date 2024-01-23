@@ -20,6 +20,7 @@ export class AuthService {
 
       await user.save();
       // JWT para mantener la autenticacion del usuario
+      const token = await JwtAdapter.generateToken({ id: user.id });
 
       // email de confirmacion
 
@@ -27,7 +28,7 @@ export class AuthService {
 
       return {
         user: userEntity,
-        token: 'ABC'
+        token
       };
 
     } catch (error) {
