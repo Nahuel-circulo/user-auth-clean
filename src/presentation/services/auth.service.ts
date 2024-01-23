@@ -22,6 +22,7 @@ export class AuthService {
       // JWT para mantener la autenticacion del usuario
       const token = await JwtAdapter.generateToken({ id: user.id });
 
+      if (!token) throw CustomError.internalServer('Error while creating JWT');
       // email de confirmacion
 
       const { password, ...userEntity } = UserEntity.fronObject(user);
