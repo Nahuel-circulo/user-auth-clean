@@ -6,7 +6,7 @@ import { UploadedFile } from "express-fileupload";
 export class FileUploadController {
 
   constructor(
-     private readonly fileUploadService: FileUploadService
+    private readonly fileUploadService: FileUploadService
   ) { }
 
   private handleError = (error: unknown, res: Response) => {
@@ -20,18 +20,23 @@ export class FileUploadController {
 
   uploadFile = (req: Request, res: Response) => {
 
-    const files = req.files;
+    const { type } = req.params;
+    const validTypes = ['user', 'products', 'categories'];
 
-    if(!req.files || Object.keys(req.files).length === 0) {
+    if (!validTypes.includes(type)) {
+      return res.status(400).json({ error: `Invalid type. Valid ones ${validTypes}` })
+    }
+
+    if (!req.files || Object.keys(req.files).length === 0) {
       return res.status(400).json({ error: 'No files were selected.' });
     }
 
-    const file =  req.files.file as UploadedFile;
+    const file = req.files.file as UploadedFile;
 
-    this.fileUploadService.uploadSingleFile(file)
+    this.fileUploadService.uploadSingleFile(file,`uploads/${type}`)
       .then(uploaded => res.json(uploaded))
       .catch(error => this.handleError(error, res))
-  
+
   }
 
   uploadMultipleFiles = async (req: Request, res: Response) => {
