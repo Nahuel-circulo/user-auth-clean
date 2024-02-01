@@ -37,18 +37,24 @@ export class FileUploadService {
       const fileName = `${this.uuid()}.${fileExtension}`;
       file.mv(destination + `/${fileName}`);
 
-      return fileName;
+      return {fileName};
 
     } catch (error) {
       throw error;
     }
   }
 
-  public uploadMultipleFile(
-    file: UploadedFile[],
+  public async uploadMultipleFile(
+    files: UploadedFile[],
     folder: string = 'uploads',
     validExtensions: string[] = ['png', 'jpg', 'jpeg', 'gif', 'webp']
-  ) { }
+  ) {
+
+    const fileNmes = await Promise.all(
+      files.map(file => this.uploadSingleFile(file, folder, validExtensions))
+    )
+    return fileNmes
+  }
 
 
 }
